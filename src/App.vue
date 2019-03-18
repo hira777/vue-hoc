@@ -1,28 +1,34 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <blog-post :id="1" @click="onClick" />
+    <comments-list></comments-list>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import BlogPost from "./components/BlogPost";
+import CommentsList from "./components/CommentsList";
+import withSubscription from "./hocs/withSubscription";
+
+const BlogPostWithSubscription = withSubscription(
+  BlogPost,
+  (DataSource, props) => DataSource.getBlogPost(props.id)
+);
+const CommentsListWithSubscription = withSubscription(
+  CommentsList,
+  DataSource => DataSource.getComments()
+);
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
-    HelloWorld
+    "blog-post": BlogPostWithSubscription,
+    "comments-list": CommentsListWithSubscription
+  },
+  methods: {
+    onClick(msg) {
+      alert(msg);
+    }
   }
-}
+};
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
